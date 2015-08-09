@@ -11,4 +11,8 @@ public class Song {
         this.name = name;
         this.absolutePath = absolutePath;
     }
+
+    public String getName() { return name; }
+
+    public String getAbsolutePath() { return absolutePath; }
 }

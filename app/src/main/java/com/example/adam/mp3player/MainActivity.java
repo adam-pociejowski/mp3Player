@@ -1,6 +1,8 @@
 package com.example.adam.mp3player;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.Cursor;
@@ -9,42 +11,24 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import java.util.ArrayList;
 
-import java.io.File;
-import java.io.FileFilter;
-
-public class MainActivity extends Activity {
-    private Button filesButton,
-                   playlistButton;
+public class MainActivity extends Activity implements FragmentCommunicator {
+    private  ListFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        filesButton = (Button)findViewById(R.id.files_button);
-        playlistButton = (Button)findViewById(R.id.playlist_button);
+        MenuFragment menuFragment = new MenuFragment();
+        listFragment = new ListFragment();
 
-        filesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File directory = new File("/storage/emulated/0/Music");
-                try {
-                    File files[] = directory.listFiles();
-                    for (File file : files) System.out.println(file.getAbsolutePath());
-                }
-                catch (Exception e) {}
-            }
-        });
-
-        playlistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.my_layout, menuFragment, "menuFragment");
+        fragmentTransaction.add(R.id.my_layout, listFragment, "listFragment");
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -61,5 +45,10 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void respond(String data) {
+        listFragment.stateChanged(data);
     }
 }
