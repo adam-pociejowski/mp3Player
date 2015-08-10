@@ -1,12 +1,14 @@
-package com.example.adam.mp3player;
+package com.example.adam.mp3player.main;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.example.adam.mp3player.R;
 
 /**
  * Created by Adam on 2015-08-09.
@@ -36,7 +38,6 @@ public class MenuFragment extends Fragment {
                 fragmentCommunicator.respond("playlist");
             }
         });
-
         return rootView;
     }
 
@@ -46,5 +47,4 @@ public class MenuFragment extends Fragment {
         super.onAttach(activity);
         fragmentCommunicator = (FragmentCommunicator)activity;
     }
-
 }

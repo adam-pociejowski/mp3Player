@@ -1,4 +1,4 @@
-package com.example.adam.mp3player;
+package com.example.adam.mp3player.files_scanner;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.example.adam.mp3player.R;
+import com.example.adam.mp3player.main.Config;
+import com.example.adam.mp3player.main.Song;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ public class ListFragment extends Fragment {
         if (data.equals("files")) {
             ArrayList<Song> songsList = Config.getInstance().getSongsList();
             if (songsList == null) {
-                songsList = new ArrayList<Song>();
+                songsList = new ArrayList<>();
                 File directory = new File(Config.getInstance().getMusicInternalPath());
                 try {
                     File files[] = directory.listFiles();
@@ -36,6 +38,7 @@ public class ListFragment extends Fragment {
                     Log.e("error", "Error while reading files from "+Config.getInstance().getMusicInternalPath()+" - ListFragment.java");
                 }
             }
+            new ListViewCreator(songsList, getActivity());
         }
         else if (data.equals("playlist")) {
 

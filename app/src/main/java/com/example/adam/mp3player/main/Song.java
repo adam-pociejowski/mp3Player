@@ -1,18 +1,18 @@
-package com.example.adam.mp3player;
+package com.example.adam.mp3player.main;
 
 /**
  * Created by Adam on 2015-08-09.
  */
 public class Song {
     private String absolutePath;
-    private String name;
+    private String title;
 
-    public Song(String name, String absolutePath) {
-        this.name = name;
+    public Song(String title, String absolutePath) {
+        this.title = title;
         this.absolutePath = absolutePath;
     }
 
-    public String getName() { return name; }
+    public String getTitle() { return title; }
 
     public String getAbsolutePath() { return absolutePath; }
 }

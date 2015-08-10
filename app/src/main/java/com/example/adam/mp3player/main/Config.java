@@ -1,4 +1,4 @@
-package com.example.adam.mp3player;
+package com.example.adam.mp3player.main;
 
 import java.util.ArrayList;
 

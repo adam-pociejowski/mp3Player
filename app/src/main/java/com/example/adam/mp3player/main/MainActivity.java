@@ -1,20 +1,16 @@
-package com.example.adam.mp3player;
+package com.example.adam.mp3player.main;
 
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import java.util.ArrayList;
+import com.example.adam.mp3player.files_scanner.ListFragment;
+import com.example.adam.mp3player.R;
 
 public class MainActivity extends Activity implements FragmentCommunicator {
-    private  ListFragment listFragment;
+    private ListFragment listFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
