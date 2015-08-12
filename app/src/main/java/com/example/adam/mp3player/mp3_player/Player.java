@@ -17,7 +17,6 @@ public class Player {
 
     public void playSong(Song song) {
         try {
-            Log.e("Playis", song.getTitle()+" "+song.getAbsolutePath());
             mediaPlayer.reset();
             mediaPlayer.setDataSource(song.getAbsolutePath());
             mediaPlayer.prepare();
@@ -26,7 +25,14 @@ public class Player {
         catch (Exception e) {
             Log.e("Playing song error", e.getMessage()+" - Player.java");
         }
+
     }
+
+    public int getMax() { return mediaPlayer.getDuration(); }
+
+    public int getCurrentPosition() { return mediaPlayer.getCurrentPosition(); }
+
+    public void stopSong() { mediaPlayer.stop(); }
 
     public static synchronized Player getInstance() {
         if (instance == null) instance = new Player();

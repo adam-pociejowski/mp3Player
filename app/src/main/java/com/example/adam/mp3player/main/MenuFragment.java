@@ -3,7 +3,6 @@ package com.example.adam.mp3player.main;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ public class MenuFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.menu_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.main_menu_fragment, container, false);
 
         filesButton = (Button)rootView.findViewById(R.id.files_button);
         playlistButton = (Button)rootView.findViewById(R.id.playlist_button);

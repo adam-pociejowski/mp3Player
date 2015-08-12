@@ -15,7 +15,7 @@ public class MainActivity extends Activity implements FragmentCommunicator {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_activity);
 
         MenuFragment menuFragment = new MenuFragment();
         listFragment = new ListFragment();

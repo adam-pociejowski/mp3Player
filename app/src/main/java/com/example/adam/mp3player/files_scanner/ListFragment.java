@@ -19,7 +19,7 @@ public class ListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.list_fragment, container, false);
+        return inflater.inflate(R.layout.main_list_fragment, container, false);
     }
 
     public void stateChanged(String data) {
@@ -30,7 +30,7 @@ public class ListFragment extends Fragment {
                 File directory = new File(Config.getInstance().getMusicInternalPath());
                 try {
                     File files[] = directory.listFiles();
-                    for (File file : files) songsList.add(new Song(file.getName(), file.getAbsolutePath()));
+                    for (File file : files) songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath()));
 
                     Config.getInstance().setSongsList(songsList);
                 }
