@@ -13,10 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.main.Song;
-import com.example.adam.mp3player.mp3_player.Player;
-import com.example.adam.mp3player.mp3_player.PlayerActivity;
+import com.example.adam.mp3player.player.Player;
 
 import java.util.ArrayList;
 
@@ -27,14 +25,17 @@ public class ListViewCreator {
     private ArrayList<Song> songsList;
     private int selected = -1;
     private static volatile ListViewCreator instance = null;
+    final ListView listView;
+    private Activity activity;
 
     public ListViewCreator(final ArrayList<Song> songsList, final Activity activity) {
         this.songsList = songsList;
+        this.activity = activity;
         final Context context = activity.getApplicationContext();
         instance = this;
 
         final MyListViewAdapter myListAdapter = new MyListViewAdapter(context);
-        final ListView listView = (ListView) activity.findViewById(R.id.files_list_view);
+        listView = (ListView) activity.findViewById(R.id.files_list_view);
         listView.setAdapter(myListAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -49,9 +50,8 @@ public class ListViewCreator {
                     else Player.getInstance().stopSong();
 
                     myListAdapter.notifyDataSetChanged();
-                }
-                catch (Exception e) {
-                    Log.e("List item clicked error", e.getMessage()+" - ListViewCreator.java");
+                } catch (Exception e) {
+                    Log.e("List item clicked error", e.getMessage() + " - ListViewCreator.java");
                 }
                 Intent myIntent = new Intent("com.example.adam.mp3player.mp3_player.PlayerActivity");
                 myIntent.putExtra("song", songsList.get(position));
@@ -70,13 +70,10 @@ public class ListViewCreator {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View customView = layoutInflater.inflate(R.layout.main_list_fragment_element, parent, false);
 
+            View customView  = layoutInflater.inflate(R.layout.main_files_scanner_fragment_element, parent, false);
             TextView textView = (TextView)customView.findViewById(R.id.list_fragment_textView);
-
-            Song song = songsList.get(position);
-            textView.setText(song.getTitle());
-            if (position == selected) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
+            Song song = songsList.get(position);textView.setText(song.getTitle());if (position == selected) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
 
             return customView;
         }

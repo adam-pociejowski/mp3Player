@@ -20,7 +20,7 @@
         </activity>
 
 
-        <activity android:name=".mp3_player.PlayerActivity" android:label="Player">
+        <activity android:name=".player.PlayerActivity" android:label="Player">
             <intent-filter>
                 <action android:name="com.example.adam.mp3player.mp3_player.PlayerActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

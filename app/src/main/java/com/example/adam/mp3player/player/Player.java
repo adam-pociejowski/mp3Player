@@ -1,4 +1,4 @@
-package com.example.adam.mp3player.mp3_player;
+package com.example.adam.mp3player.player;
 
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -25,8 +25,9 @@ public class Player {
         catch (Exception e) {
             Log.e("Playing song error", e.getMessage()+" - Player.java");
         }
-
     }
+
+    public void seekTo(int position) { mediaPlayer.seekTo(position); }
 
     public int getMax() { return mediaPlayer.getDuration(); }
 

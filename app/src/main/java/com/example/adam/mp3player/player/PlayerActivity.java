@@ -1,4 +1,4 @@
-package com.example.adam.mp3player.mp3_player;
+package com.example.adam.mp3player.player;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.files_scanner.ListViewCreator;
 import com.example.adam.mp3player.main.Song;
 
 /**
@@ -32,6 +31,18 @@ public class PlayerActivity extends Activity {
 
         textView.setText(song.getTitle());
         seekBar.setMax(Player.getInstance().getMax());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Player.getInstance().seekTo(seekBar.getProgress());
+            }
+        });
         startRefreshingThread();
     }
 
