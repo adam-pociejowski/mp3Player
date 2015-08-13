@@ -3,16 +3,15 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button android:id="@+id/playlist_add_playlist_button"
-        android:text="@string/playlist_add_button"
+    <Button android:id="@+id/playlist_confirm_button"
+        android:text="@string/playlist_confirm_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
 
-    <ListView android:id="@+id/playlist_listView"
+    <ListView android:id="@+id/playlist_select_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true" >
     </ListView>
-
 </RelativeLayout>

@@ -26,6 +26,7 @@ public class FilesScannerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Config.getInstance().setPlaylistReady(false);
         createList();
     }
 
@@ -43,6 +44,6 @@ public class FilesScannerFragment extends Fragment {
                 Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - FilesScannerFragment.java");
             }
         }
-        new ListViewCreator(songsList, getActivity());
+        new FileScannerListViewCreator(songsList, getActivity());
     }
 }

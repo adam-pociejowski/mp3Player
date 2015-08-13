@@ -4,27 +4,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
-        <LinearLayout android:id="@+id/lin1"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="visible"
-            android:layout_height="wrap_content">
-
-            <ListView android:id="@+id/files_list_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-
-        <LinearLayout android:id="@+id/lin2"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:layout_height="wrap_content">
-
-            <TextView android:id="@+id/test"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:background="@color/red"/>
-        </LinearLayout>
-
+        <ListView android:id="@+id/files_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>

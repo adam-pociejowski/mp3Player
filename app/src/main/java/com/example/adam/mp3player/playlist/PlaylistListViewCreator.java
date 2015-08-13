@@ -1,0 +1,66 @@
+package com.example.adam.mp3player.playlist;
+
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import com.example.adam.mp3player.R;
+import com.example.adam.mp3player.main.Config;
+import com.example.adam.mp3player.main.Song;
+import java.util.ArrayList;
+
+/**
+ * Created by Adam on 2015-08-13.
+ */
+public class PlaylistListViewCreator {
+    private ArrayList<SinglePlaylist> playlists;
+    private ListView listView = null;
+    private MyPlaylistListViewAdapter myListAdapter = null;
+
+    public PlaylistListViewCreator(final Activity activity) {
+        final Context context = activity.getApplicationContext();
+        playlists = Config.getInstance().getPlaylists();
+
+        if (playlists.size() > 0) {
+            myListAdapter = new MyPlaylistListViewAdapter(context);
+            listView = (ListView) activity.findViewById(R.id.playlist_listView);
+            listView.setAdapter(myListAdapter);
+        }
+    }
+
+
+    class MyPlaylistListViewAdapter extends BaseAdapter {
+        private Context context;
+
+        public MyPlaylistListViewAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View customView  = layoutInflater.inflate(R.layout.playlist_list_view_item, parent, false);
+            TextView textView = (TextView)customView.findViewById(R.id.playlist_list_text);
+            SinglePlaylist playlist = playlists.get(position);
+            textView.setText(playlist.getPlaylistName());
+
+            return customView;
+        }
+
+        @Override
+        public int getCount() { return playlists.size(); }
+
+        @Override
+        public Object getItem(int position) { return playlists.get(position); }
+
+        @Override
+        public long getItemId(int position) { return position; }
+    }
+}

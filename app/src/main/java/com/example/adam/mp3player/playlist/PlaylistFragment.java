@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.adam.mp3player.R;
+import com.example.adam.mp3player.main.Config;
 import com.example.adam.mp3player.main.FragmentCommunicator;
 
 /**
@@ -40,5 +41,16 @@ public class PlaylistFragment extends Fragment {
                 fragmentCommunicator.fragmentCallback(R.id.playlist_add_playlist_button);
             }
         });
+
+        if (Config.getInstance().getPlaylistReady()) {
+            Config.getInstance().addPlaylist(Config.getInstance().getNewPlaylist());
+            Config.getInstance().setPlaylistReady(false);
+            Config.getInstance().setNewPlaylist(null);
+        }
+        if (Config.getInstance().getPlaylists().size() > 0) {
+            Log.d("", ""+Config.getInstance().getPlaylists().size());
+            new PlaylistListViewCreator(getActivity());
+        }
+
     }
 }

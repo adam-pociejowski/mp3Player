@@ -13,7 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.files_scanner.FilesScannerFragment;
-import com.example.adam.mp3player.playlist.AddingPlaylistFragment;
+import com.example.adam.mp3player.playlist.AddingPlaylistNameFragment;
+import com.example.adam.mp3player.playlist.AddingPlaylistSelectFragment;
 import com.example.adam.mp3player.playlist.PlaylistFragment;
 
 public class MainActivity extends ActionBarActivity implements FragmentCommunicator {
@@ -88,8 +89,9 @@ public class MainActivity extends ActionBarActivity implements FragmentCommunica
     @Override
     public void fragmentCallback(int id) {
         switch (id) {
-            case R.id.playlist_add_playlist_button: setFragment(new AddingPlaylistFragment(), playlistButton); break;
+            case R.id.playlist_add_playlist_button: setFragment(new AddingPlaylistSelectFragment(), playlistButton); break;
             case R.id.playlist_adding_button: setFragment(playlistFragment, playlistButton); break;
+            case R.id.playlist_confirm_button: setFragment(new AddingPlaylistNameFragment(), playlistButton); break;
             default: Log.e("fragmentCallback", "No referenced id error");
         }
     }
