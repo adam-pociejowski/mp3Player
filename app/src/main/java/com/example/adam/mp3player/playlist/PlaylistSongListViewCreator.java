@@ -2,7 +2,6 @@ package com.example.adam.mp3player.playlist;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,46 +14,38 @@ import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.main.Song;
 import com.example.adam.mp3player.player.Player;
 
-import java.util.ArrayList;
-
 /**
- * Created by Adam on 2015-08-13.
+ * Created by Adam on 2015-08-15.
  */
-public class PlaylistAddingListViewCreator {
-    private ArrayList<Song> songsList;
+public class PlaylistSongListViewCreator {
+    private SinglePlaylist playlist;
     private final ListView listView;
-    private ArrayList<Integer> selectedSongsIndexes = new ArrayList<>();
+    private int selected = -1;
     private final MyPlaylistListViewAdapter myListAdapter;
 
-    public PlaylistAddingListViewCreator(final ArrayList<Song> songsList, final Activity activity) {
-        this.songsList = songsList;
+    public PlaylistSongListViewCreator(final SinglePlaylist playlist, final Activity activity) {
+        this.playlist = playlist;
         final Context context = activity.getApplicationContext();
 
         myListAdapter = new MyPlaylistListViewAdapter(context);
-        listView = (ListView) activity.findViewById(R.id.playlist_select_list);
+        listView = (ListView) activity.findViewById(R.id.playlist_song_list_listView);
         listView.setAdapter(myListAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    if (!selectedSongsIndexes.contains(position)) selectedSongsIndexes.add(position);
-                    else selectedSongsIndexes.remove((Object)position);
+                    Player.getInstance().playSong(playlist.getSongs().get(position));
+                    if (selected != position) selected = position;
+                    else Player.getInstance().stopSong();
+
                     myListAdapter.notifyDataSetChanged();
-                } catch (Exception e) {
-                    Log.e("List item clicked error", e.getMessage() + " - FileScannerListViewCreator.java");
+                }
+                catch (Exception e) {
+                    Log.e("List item clicked error", e.getMessage() + " - PlaylistSongListViewCreator.java");
                 }
             }
         });
-    }
-
-    public SinglePlaylist getSelectedSongsAsPlaylist() {
-        ArrayList<Song> selectedSongs = new ArrayList<>();
-        for (int i : selectedSongsIndexes) selectedSongs.add(songsList.get(i));
-
-        SinglePlaylist playlist = new SinglePlaylist();
-        playlist.setSongs(selectedSongs);
-        return playlist;
     }
 
 
@@ -69,22 +60,23 @@ public class PlaylistAddingListViewCreator {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            View customView  = layoutInflater.inflate(R.layout.playlist_adding_listview_item, parent, false);
-            TextView textView = (TextView)customView.findViewById(R.id.playlist_adding_list_text);
-            Song song = songsList.get(position);
+            View customView  = layoutInflater.inflate(R.layout.playlist_song_list_list_view_item, parent, false);
+            TextView textView = (TextView)customView.findViewById(R.id.playlist_song_list_text);
+            Song song = playlist.getSongs().get(position);
             textView.setText(song.getTitle());
 
-            if (selectedSongsIndexes.contains(position)) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
+            if (position == selected) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
             return customView;
         }
 
         @Override
-        public int getCount() { return songsList.size(); }
+        public int getCount() { return playlist.getSongs().size(); }
 
         @Override
-        public Object getItem(int position) { return songsList.get(position); }
+        public Object getItem(int position) { return playlist.getSongs().get(position); }
 
         @Override
         public long getItemId(int position) { return position; }
     }
+
 }

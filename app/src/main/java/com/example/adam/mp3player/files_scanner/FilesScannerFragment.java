@@ -26,7 +26,6 @@ public class FilesScannerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Config.getInstance().setPlaylistReady(false);
         createList();
     }
 

@@ -12,7 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.main.Config;
-import com.example.adam.mp3player.main.Song;
+import com.example.adam.mp3player.main.FragmentCommunicator;
+
 import java.util.ArrayList;
 
 /**
@@ -23,15 +24,26 @@ public class PlaylistListViewCreator {
     private ListView listView = null;
     private MyPlaylistListViewAdapter myListAdapter = null;
 
-    public PlaylistListViewCreator(final Activity activity) {
+    public PlaylistListViewCreator(final Activity activity, final FragmentCommunicator fragmentCommunicator) {
         final Context context = activity.getApplicationContext();
-        playlists = Config.getInstance().getPlaylists();
+        playlists = Config.getInstance().getPlaylists(activity.getApplicationContext());
 
         if (playlists.size() > 0) {
             myListAdapter = new MyPlaylistListViewAdapter(context);
             listView = (ListView) activity.findViewById(R.id.playlist_listView);
             listView.setAdapter(myListAdapter);
         }
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
+                    fragmentCommunicator.setChoosenPlaylist(playlists.get(position));
+                    fragmentCommunicator.fragmentCallback(R.id.playlist_listView);
+                }
+                catch (Exception e) {}
+            }
+        });
     }
 
 

@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by Adam on 2015-08-13.
  */
-public class AddingPlaylistSelectFragment extends Fragment {
+public class PlaylistAddingSelectFragment extends Fragment {
     private FragmentCommunicator fragmentCommunicator;
 
     @Override
@@ -44,17 +41,16 @@ public class AddingPlaylistSelectFragment extends Fragment {
                 Config.getInstance().setSongsList(songsList);
             }
             catch (Exception e) {
-                Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - AddingPlaylistSelectFragment.java");
+                Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - PlaylistAddingSelectFragment.java");
             }
         }
-        final PlaylistAddingListViewCreator creator = new PlaylistAddingListViewCreator(songsList, getActivity());
+        final PlaylistAddingSelectListViewCreator creator = new PlaylistAddingSelectListViewCreator(songsList, getActivity());
 
         Button confirmButton = (Button)getActivity().findViewById(R.id.playlist_confirm_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Config.getInstance().setPlaylistReady(true);
-                Config.getInstance().setNewPlaylist(creator.getSelectedSongsAsPlaylist());
+                Config.getInstance().setTemporaryPlaylist(creator.getSelectedSongsAsPlaylist());
                 fragmentCommunicator.fragmentCallback(R.id.playlist_confirm_button);
             }
         });

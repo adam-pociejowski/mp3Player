@@ -12,13 +12,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.adam.mp3player.R;
+import com.example.adam.mp3player.database.DatabaseAdapter;
 import com.example.adam.mp3player.main.Config;
 import com.example.adam.mp3player.main.FragmentCommunicator;
+import com.example.adam.mp3player.main.Song;
+
+import java.util.ArrayList;
 
 /**
  * Created by Adam on 2015-08-13.
  */
-public class AddingPlaylistNameFragment extends Fragment {
+public class PlaylistAddingNameFragment extends Fragment {
     private FragmentCommunicator fragmentCommunicator;
     private SinglePlaylist playlist = null;
 
@@ -36,8 +40,7 @@ public class AddingPlaylistNameFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        if (Config.getInstance().getPlaylistReady()) playlist = Config.getInstance().getNewPlaylist();
+        playlist = Config.getInstance().getTemporaryPlaylist();
         final EditText playlistName = (EditText)getActivity().findViewById(R.id.playlist_editName);
 
         Button addButton = (Button)getActivity().findViewById(R.id.playlist_adding_button);
@@ -48,10 +51,19 @@ public class AddingPlaylistNameFragment extends Fragment {
 
                 if (name.length() > 3 && playlist != null) {
                     playlist.setPlaylistName(name);
-                    fragmentCommunicator.fragmentCallback(R.id.playlist_adding_button);
+                    addPlaylistToDatabase(playlist);
+                    DatabaseAdapter databaseAdapter = new DatabaseAdapter(getActivity().getApplicationContext());
+                    ArrayList<String> data = databaseAdapter.getAllData();
+                    Config.getInstance().addPlaylist(playlist);
                 }
                 else Toast.makeText(getActivity().getApplicationContext(), "Playlist name should have more than 3 letter", Toast.LENGTH_SHORT);
             }
         });
+    }
+
+    private void addPlaylistToDatabase(SinglePlaylist playlist) {
+        DatabaseAdapter databaseAdapter = new DatabaseAdapter(getActivity().getApplicationContext());
+        ArrayList<Song> songs = playlist.getSongs();
+        for (Song song : songs) databaseAdapter.insertData(song.getAbsolutePath(), playlist.getPlaylistName());
     }
 }
