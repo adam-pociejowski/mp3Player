@@ -10,9 +10,16 @@ import com.example.adam.mp3player.main.Song;
 public class Player {
     private MediaPlayer mediaPlayer;
     private static volatile Player instance = null;
+    private PlayerCommunicator reference = null;
 
     private Player() {
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                reference.notifyFromPlayer(true);
+            }
+        });
     }
 
     public void playSong(Song song) {
@@ -27,6 +34,8 @@ public class Player {
         }
     }
 
+    public Boolean isPlaying() { return mediaPlayer.isPlaying(); }
+
     public void seekTo(int position) { mediaPlayer.seekTo(position); }
 
     public int getMax() { return mediaPlayer.getDuration(); }
@@ -34,6 +43,8 @@ public class Player {
     public int getCurrentPosition() { return mediaPlayer.getCurrentPosition(); }
 
     public void stopSong() { mediaPlayer.stop(); }
+
+    public void setReference(PlayerCommunicator reference) { this.reference = reference; }
 
     public static synchronized Player getInstance() {
         if (instance == null) instance = new Player();

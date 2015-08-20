@@ -13,20 +13,23 @@ import android.widget.TextView;
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.main.Song;
 import com.example.adam.mp3player.player.Player;
+import com.example.adam.mp3player.player.PlayerCommunicator;
 
 /**
  * Created by Adam on 2015-08-15.
  */
-public class PlaylistSongListViewCreator {
+public class PlaylistSongListViewCreator implements PlayerCommunicator {
     private SinglePlaylist playlist;
     private final ListView listView;
     private int selected = -1;
     private final MyPlaylistListViewAdapter myListAdapter;
+    private Player player = Player.getInstance();
 
     public PlaylistSongListViewCreator(final SinglePlaylist playlist, final Activity activity) {
         this.playlist = playlist;
         final Context context = activity.getApplicationContext();
 
+        player.setReference(this);
         myListAdapter = new MyPlaylistListViewAdapter(context);
         listView = (ListView) activity.findViewById(R.id.playlist_song_list_listView);
         listView.setAdapter(myListAdapter);
@@ -35,7 +38,7 @@ public class PlaylistSongListViewCreator {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    Player.getInstance().playSong(playlist.getSongs().get(position));
+                    player.playSong(playlist.getSongs().get(position));
                     if (selected != position) selected = position;
                     else Player.getInstance().stopSong();
 
@@ -46,6 +49,15 @@ public class PlaylistSongListViewCreator {
                 }
             }
         });
+    }
+
+    @Override
+    public void notifyFromPlayer(Boolean status) {
+        if (status) {
+            selected++;
+            player.playSong(playlist.getSongs().get(selected));
+            myListAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -65,7 +77,7 @@ public class PlaylistSongListViewCreator {
             Song song = playlist.getSongs().get(position);
             textView.setText(song.getTitle());
 
-            if (position == selected) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
+            if (position == selected && player.isPlaying()) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
             return customView;
         }
 
@@ -78,5 +90,4 @@ public class PlaylistSongListViewCreator {
         @Override
         public long getItemId(int position) { return position; }
     }
-
 }
