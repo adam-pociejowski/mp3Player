@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.Config;
-import com.example.adam.mp3player.main.FragmentCommunicator;
-import com.example.adam.mp3player.main.Song;
+import com.example.adam.mp3player.model.Config;
+import com.example.adam.mp3player.model.FragmentCommunicator;
+import com.example.adam.mp3player.model.Song;
 import java.io.File;
 import java.util.ArrayList;
 

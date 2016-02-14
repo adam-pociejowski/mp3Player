@@ -3,7 +3,6 @@ package com.example.adam.mp3player.playlist;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,9 @@ import android.widget.Toast;
 
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.database.DatabaseAdapter;
-import com.example.adam.mp3player.main.Config;
-import com.example.adam.mp3player.main.FragmentCommunicator;
-import com.example.adam.mp3player.main.Song;
+import com.example.adam.mp3player.model.Config;
+import com.example.adam.mp3player.model.FragmentCommunicator;
+import com.example.adam.mp3player.model.Song;
 
 import java.util.ArrayList;
 

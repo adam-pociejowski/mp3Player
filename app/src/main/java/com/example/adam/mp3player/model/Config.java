@@ -1,7 +1,6 @@
-package com.example.adam.mp3player.main;
+package com.example.adam.mp3player.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.adam.mp3player.database.DatabaseAdapter;
 import com.example.adam.mp3player.playlist.SinglePlaylist;
@@ -31,6 +30,8 @@ public class Config {
     public static String getMusicInternalPath() { return MUSIC_INTERNAL_PATH; }
 
     public static ArrayList<Song> getSongsList() { return songsList; }
+
+    public static int getSongsAmount() { return songsList.size(); }
 
     public ArrayList<SinglePlaylist> getPlaylists(Context context) {
         if (playlists.size() == 0) {

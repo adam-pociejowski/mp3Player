@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:orientation="vertical"
@@ -6,28 +6,9 @@
     tools:context=".MainActivity"
     android:id="@+id/my_layout">
 
-        <include android:id="@+id/app_bar" layout="@layout/app_bar"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal" android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFBB00"
-            android:layout_below="@+id/app_bar"
-            android:id="@+id/menu_fragment" >
-
-            <Button android:id="@+id/files_button"
-                android:text="@string/menu_files"
-                android:background="@color/inactiveButton"
-                android:layout_weight="0.5"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-
-            <Button android:id="@+id/playlist_button"
-                android:text="@string/menu_playlist"
-                android:background="@color/inactiveButton"
-                android:layout_weight="0.5"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

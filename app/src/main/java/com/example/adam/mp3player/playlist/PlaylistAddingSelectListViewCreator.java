@@ -2,7 +2,6 @@ package com.example.adam.mp3player.playlist;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.Song;
-import com.example.adam.mp3player.player.Player;
+import com.example.adam.mp3player.model.Song;
 
 import java.util.ArrayList;
 
@@ -42,7 +40,7 @@ public class PlaylistAddingSelectListViewCreator {
                     else selectedSongsIndexes.remove((Object)position);
                     myListAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
-                    Log.e("List item clicked error", e.getMessage() + " - FileScannerListViewCreator.java");
+                    Log.e("List item clicked error", e.getMessage() + " - ListFragmentListViewCreator.java");
                 }
             }
         });

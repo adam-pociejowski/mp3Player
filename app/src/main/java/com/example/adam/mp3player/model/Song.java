@@ -1,4 +1,4 @@
-package com.example.adam.mp3player.main;
+package com.example.adam.mp3player.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

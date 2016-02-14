@@ -2,7 +2,7 @@ package com.example.adam.mp3player.player;
 
 import android.media.MediaPlayer;
 import android.util.Log;
-import com.example.adam.mp3player.main.Song;
+import com.example.adam.mp3player.model.Song;
 
 /**
  * Created by Adam on 2015-08-11.

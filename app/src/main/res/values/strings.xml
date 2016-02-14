@@ -8,4 +8,7 @@
     <string name="playlist_adding_name">Playlist Name:</string>
     <string name="playlist_adding_button">Add Playlist</string>
     <string name="playlist_confirm_button">Confirm</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

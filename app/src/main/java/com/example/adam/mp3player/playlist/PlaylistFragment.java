@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.FragmentCommunicator;
+import com.example.adam.mp3player.model.FragmentCommunicator;
 
 /**
  * Created by Adam on 2015-08-12.
