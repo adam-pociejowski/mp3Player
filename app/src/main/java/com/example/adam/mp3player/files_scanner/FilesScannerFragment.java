@@ -6,16 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.main.Config;
 import com.example.adam.mp3player.main.Song;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by Adam on 2015-08-09.
- */
 public class FilesScannerFragment extends Fragment {
 
     @Override
