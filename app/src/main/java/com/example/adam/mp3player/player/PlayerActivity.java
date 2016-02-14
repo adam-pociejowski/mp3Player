@@ -9,9 +9,6 @@ import android.widget.TextView;
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.model.Song;
 
-/**
- * Created by Adam on 2015-08-12.
- */
 public class PlayerActivity extends Activity {
     private TextView textView;
     private SeekBar seekBar;
@@ -60,6 +57,7 @@ public class PlayerActivity extends Activity {
             }
         }).start();
     }
+
 
     public void setPosition(final int position) {
         PlayerActivity.this.runOnUiThread(new Runnable() {

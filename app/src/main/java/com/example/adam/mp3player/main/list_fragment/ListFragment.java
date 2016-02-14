@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.model.Config;
 import com.example.adam.mp3player.model.FragmentCommunicator;
@@ -24,8 +23,7 @@ public class ListFragment extends Fragment implements FragmentCommunicator {
         view = inflater.inflate(R.layout.fragment_list, container, false);
         createList();
         TextView textView = (TextView)view.findViewById(R.id.list_fragment_header);
-        textView.setText("All Songs Playlist | amount: "+Config.getSongsAmount());
-
+        textView.setText("Main Playlist | "+Config.getSongsAmount()+" songs");
         return view;
     }
 
@@ -42,8 +40,7 @@ public class ListFragment extends Fragment implements FragmentCommunicator {
                 }
                 songsList = getSortedSongs(songsList);
                 Config.getInstance().setSongsList(songsList);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - FilesScannerFragment.java");
             }
         }

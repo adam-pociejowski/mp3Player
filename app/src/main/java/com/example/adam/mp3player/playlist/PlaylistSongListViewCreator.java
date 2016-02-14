@@ -51,13 +51,17 @@ public class PlaylistSongListViewCreator implements PlayerCommunicator {
         });
     }
 
+
     @Override
-    public void notifyFromPlayer(Boolean status) {
-        if (status) {
-            selected++;
-            player.playSong(playlist.getSongs().get(selected));
-            myListAdapter.notifyDataSetChanged();
-        }
+    public void nextSong() {
+        selected++;
+        player.playSong(playlist.getSongs().get(selected));
+        myListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void previousSong() {
+
     }
 
 

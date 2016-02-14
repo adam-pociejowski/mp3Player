@@ -4,9 +4,6 @@ import android.media.MediaPlayer;
 import android.util.Log;
 import com.example.adam.mp3player.model.Song;
 
-/**
- * Created by Adam on 2015-08-11.
- */
 public class Player {
     private MediaPlayer mediaPlayer;
     private static volatile Player instance = null;
@@ -17,7 +14,10 @@ public class Player {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                reference.notifyFromPlayer(true);
+                if (mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition() < 1000) {
+                    mediaPlayer.stop();
+                    reference.nextSong();
+                }
             }
         });
     }
@@ -28,6 +28,7 @@ public class Player {
             mediaPlayer.setDataSource(song.getAbsolutePath());
             mediaPlayer.prepare();
             mediaPlayer.start();
+            Log.d("Start", "Start Playing "+song.getTitle());
         }
         catch (Exception e) {
             Log.e("Playing song error", e.getMessage()+" - Player.java");
@@ -44,7 +45,13 @@ public class Player {
 
     public void stopSong() { mediaPlayer.stop(); }
 
+    public void pauseSong() { mediaPlayer.pause();  }
+
+    public void resumeSong() { mediaPlayer.start(); }
+
     public void setReference(PlayerCommunicator reference) { this.reference = reference; }
+
+    public PlayerCommunicator getReference() { return reference; }
 
     public static synchronized Player getInstance() {
         if (instance == null) instance = new Player();
