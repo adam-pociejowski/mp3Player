@@ -24,6 +24,7 @@ public class FilesScannerFragment extends Fragment {
         super.onStart();
         createList();
     }
+    
 
     public void createList() {
         ArrayList<Song> songsList = Config.getInstance().getSongsList();
