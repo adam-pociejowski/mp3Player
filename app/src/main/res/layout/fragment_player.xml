@@ -13,12 +13,16 @@
         android:gravity="center"
         android:background="@color/indigo"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <RelativeLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/player_fragment_header"
-        android:layout_above="@+id/bottom_panel"
-        android:background="@drawable/sting">
+        android:layout_above="@+id/bottom_panel">
+
+        <ImageView android:id="@+id/album_image"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:background="@drawable/default_album" />
+
     </RelativeLayout>
 
     <RelativeLayout android:id="@+id/bottom_panel"

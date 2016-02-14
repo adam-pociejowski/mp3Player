@@ -1,5 +1,8 @@
 package com.example.adam.mp3player.main.list_fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -35,8 +38,20 @@ public class ListFragment extends Fragment implements FragmentCommunicator {
             File directory = new File(Config.getInstance().getMusicInternalPath());
             try {
                 File files[] = directory.listFiles();
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                 for (File file : files) {
-                    songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath()));
+                  //  songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath()));
+                    mmr.setDataSource(file.getAbsolutePath());
+                    byte[] data = mmr.getEmbeddedPicture();
+                    if (data != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath(), bitmap));
+                        Log.d("Bitmap", "have "+file.getAbsolutePath());
+                    }
+                    else {
+                        songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath(), null));
+                        Log.d("Bitmap", "don't have "+file.getAbsolutePath());
+                    }
                 }
                 songsList = getSortedSongs(songsList);
                 Config.getInstance().setSongsList(songsList);

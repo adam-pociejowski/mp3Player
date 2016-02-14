@@ -90,7 +90,7 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
             View customView  = layoutInflater.inflate(R.layout.list_fragment_listview_item, parent, false);
             TextView textView = (TextView)customView.findViewById(R.id.list_fragment_textView);
             Song song = songsList.get(position);
-            textView.setText(song.getTitle());
+            textView.setText((position + 1)+". "+song.getTitle());
 
             if (position == selected && player.isPlaying()) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
             return customView;

@@ -1,14 +1,19 @@
 package com.example.adam.mp3player.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Adam on 2015-08-09.
- */
 public class Song implements Parcelable {
     private String absolutePath;
     private String title;
+    private Bitmap image;
+
+    public Song(String title, String absolutePath, Bitmap image) {
+        this.title = title;
+        this.absolutePath = absolutePath;
+        this.image = image;
+    }
 
     public Song(String title, String absolutePath) {
         this.title = title;
@@ -18,6 +23,8 @@ public class Song implements Parcelable {
     public String getTitle() { return title; }
 
     public String getAbsolutePath() { return absolutePath; }
+
+    public Bitmap getImage() { return image; }
 
     @Override
     public int describeContents() {

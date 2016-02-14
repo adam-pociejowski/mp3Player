@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.model.Config;
 import com.example.adam.mp3player.model.FragmentCommunicator;
@@ -16,9 +15,6 @@ import com.example.adam.mp3player.model.Song;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by Adam on 2015-08-13.
- */
 public class PlaylistAddingSelectFragment extends Fragment {
     private FragmentCommunicator fragmentCommunicator;
 
