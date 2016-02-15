@@ -15,12 +15,11 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.main.player_fragment.PlayerFragment;
 import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
 import com.example.adam.mp3player.player.PlayerCommunicator;
-import com.example.adam.mp3player.playlists.PlaylistActivity;
+import com.example.adam.mp3player.playlist.PlaylistActivity;
 
 import java.util.ArrayList;
 
@@ -45,7 +44,8 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        if (menuItem.getTitle().equals("My Playlists")) {
+                        if (menuItem.getTitle().equals("All songs")) {}
+                        else if (menuItem.getTitle().equals("My Playlists")) {
                             Intent i = new Intent(activity, PlaylistActivity.class);
                             activity.startActivity(i);
                         }

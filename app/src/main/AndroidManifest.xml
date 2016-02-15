@@ -25,16 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".player.PlayerActivity"
-            android:label="Player">
-            <intent-filter>
-                <action android:name="com.example.adam.mp3player.mp3_player.PlayerActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".playlists.PlaylistActivity"
+            android:name=".playlist.PlaylistActivity"
             android:label="@string/title_activity_playlist"
             android:theme="@style/AppTheme"></activity>
     </application>
