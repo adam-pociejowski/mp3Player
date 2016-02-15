@@ -40,7 +40,6 @@ public class ListFragment extends Fragment implements FragmentCommunicator {
                 File files[] = directory.listFiles();
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                 for (File file : files) {
-                  //  songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath()));
                     mmr.setDataSource(file.getAbsolutePath());
                     byte[] data = mmr.getEmbeddedPicture();
                     if (data != null) {
@@ -77,16 +76,11 @@ public class ListFragment extends Fragment implements FragmentCommunicator {
         return songs;
     }
 
+    @Override
+    public void fragmentCallback(int id) {}
 
     @Override
-    public void fragmentCallback(int id) {
-
-    }
-
-    @Override
-    public void setChoosenPlaylist(SinglePlaylist choosenPlaylist) {
-
-    }
+    public void setChoosenPlaylist(SinglePlaylist choosenPlaylist) { }
 
     @Override
     public SinglePlaylist getChoosenPlaylist() {

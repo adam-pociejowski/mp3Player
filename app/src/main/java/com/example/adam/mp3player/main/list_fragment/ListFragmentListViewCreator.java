@@ -2,19 +2,26 @@ package com.example.adam.mp3player.main.list_fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
+import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.main.player_fragment.PlayerFragment;
 import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
 import com.example.adam.mp3player.player.PlayerCommunicator;
+import com.example.adam.mp3player.playlists.PlaylistActivity;
+
 import java.util.ArrayList;
 
 public class ListFragmentListViewCreator implements PlayerCommunicator {
@@ -23,10 +30,38 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
     private ListView listView;
     private MyListViewAdapter myListAdapter;
     private Player player = Player.getInstance();
+    private Button button;
 
     public ListFragmentListViewCreator(final ArrayList<Song> songsList, final Activity activity, View view) {
         this.songsList = songsList;
         final Context context = activity.getApplicationContext();
+        button = (Button)view.findViewById(R.id.show_popup_menu);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup = new PopupMenu(activity, button);
+                popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if (menuItem.getTitle().equals("My Playlists")) {
+                            Intent i = new Intent(activity, PlaylistActivity.class);
+                            activity.startActivity(i);
+                        }
+                        else if (menuItem.getTitle().equals("Add Playlist")) {
+
+                        }
+                        else if (menuItem.getTitle().equals("Settings")) {
+
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });
+
         myListAdapter = new MyListViewAdapter(context);
         listView = (ListView)view.findViewById(R.id.files_list_view);
         listView.setAdapter(myListAdapter);
