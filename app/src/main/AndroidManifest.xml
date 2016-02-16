@@ -25,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".playlist.PlaylistListActivity"
+            android:label="@string/title_activity_playlist"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".playlist.PlaylistActivity"
             android:label="@string/title_activity_playlist"
             android:theme="@style/AppTheme"></activity>

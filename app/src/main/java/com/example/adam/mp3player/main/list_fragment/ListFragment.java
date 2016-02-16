@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
+import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.model.Config;
 import com.example.adam.mp3player.model.FragmentCommunicator;
 import com.example.adam.mp3player.model.Song;
@@ -19,10 +20,15 @@ import java.util.ArrayList;
 
 public class ListFragment extends Fragment implements FragmentCommunicator {
     private View view;
+    private MainActivity activity;
+
+    public void setActivity(MainActivity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_list, container, false);
+        view = inflater.inflate(R.layout.main_activity_frg_list, container, false);
         createList();
         TextView textView = (TextView)view.findViewById(R.id.list_fragment_header);
         textView.setText("Main Playlist | "+Config.getSongsAmount()+" songs");
@@ -57,7 +63,7 @@ public class ListFragment extends Fragment implements FragmentCommunicator {
                 Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - FilesScannerFragment.java");
             }
         }
-        new ListFragmentListViewCreator(Config.getSongsList(), getActivity(), view);
+        new ListFragmentListViewCreator(Config.getSongsList(), activity, view);
     }
 
 

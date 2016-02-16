@@ -4,18 +4,17 @@ import android.media.MediaPlayer;
 import android.util.Log;
 import com.example.adam.mp3player.model.Song;
 
-public class Player {
-    private MediaPlayer mediaPlayer;
+public class Player extends MediaPlayer {
     private static volatile Player instance = null;
     private PlayerCommunicator reference = null;
 
     private Player() {
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        super();
+        setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                if (mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition() < 1000) {
-                    mediaPlayer.stop();
+                if (getDuration() - getCurrentPosition() < 1000) {
+                    stop();
                     reference.nextSong();
                 }
             }
@@ -24,10 +23,10 @@ public class Player {
 
     public void playSong(Song song) {
         try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(song.getAbsolutePath());
-            mediaPlayer.prepare();
-            mediaPlayer.start();
+            reset();
+            setDataSource(song.getAbsolutePath());
+            prepare();
+            start();
             Log.d("Start", "Start Playing "+song.getTitle());
         }
         catch (Exception e) {
@@ -35,19 +34,7 @@ public class Player {
         }
     }
 
-    public Boolean isPlaying() { return mediaPlayer.isPlaying(); }
-
-    public void seekTo(int position) { mediaPlayer.seekTo(position); }
-
-    public int getMax() { return mediaPlayer.getDuration(); }
-
-    public int getCurrentPosition() { return mediaPlayer.getCurrentPosition(); }
-
-    public void stopSong() { mediaPlayer.stop(); }
-
-    public void pauseSong() { mediaPlayer.pause();  }
-
-    public void resumeSong() { mediaPlayer.start(); }
+    public void resume() { start(); }
 
     public void setReference(PlayerCommunicator reference) { this.reference = reference; }
 

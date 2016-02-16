@@ -6,6 +6,7 @@ public class Config {
     private static volatile Config instance = null;
     private static final String MUSIC_INTERNAL_PATH = "/storage/emulated/0/Music";
     private static ArrayList<Song> songsList;
+    private static ArrayList<Playlist> playlists;
 
 
     public static Song getSongByPath(String path) {
@@ -14,6 +15,10 @@ public class Config {
         }
         return null;
     }
+
+    public static ArrayList<Playlist> getPlaylists() { return playlists; }
+
+    public static void setPlaylists(ArrayList<Playlist> playlists) { Config.playlists = playlists; }
 
     public void setSongsList(ArrayList<Song> songsList) { this.songsList = songsList; }
 
