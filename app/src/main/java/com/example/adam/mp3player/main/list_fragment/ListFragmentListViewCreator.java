@@ -19,6 +19,8 @@ import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
 import com.example.adam.mp3player.player.PlayerCommunicator;
 import com.example.adam.mp3player.playlist.PlaylistListActivity;
+import com.example.adam.mp3player.playlist.add_playlist.AddPlaylistActivity;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -43,7 +45,6 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
             public void onClick(final View view) {
                 PopupMenu popup = new PopupMenu(activity, button);
                 popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -52,7 +53,10 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
                             Intent i = new Intent(activity, PlaylistListActivity.class);
                             activity.startActivity(i);
                         }
-                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist))) {}
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist))) {
+                            Intent i = new Intent(activity, AddPlaylistActivity.class);
+                            activity.startActivity(i);
+                        }
                         else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {}
                         return true;
                     }

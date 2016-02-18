@@ -28,7 +28,6 @@ public class PlaylistListActivity extends Activity {
     @Bind(R.id.show_popup_menu) Button popupMenuButton;
     @Bind(R.id.list_view_of_playlists) ListView listView;
     private MyListViewAdapter myListAdapter;
-    private DatabaseConnector db;
     private ArrayList<Playlist> playlists = new ArrayList<>();
 
     @Override
@@ -57,9 +56,7 @@ public class PlaylistListActivity extends Activity {
                 popup.show();
             }
         });
-        db = DatabaseConnector.getInstance(getApplicationContext());
-        playlists = db.getFromDatabase();
-        Config.setPlaylists(playlists);
+        playlists = Config.getPlaylists(getApplicationContext());
 
         myListAdapter = new MyListViewAdapter(this.getApplicationContext());
         listView.setAdapter(myListAdapter);

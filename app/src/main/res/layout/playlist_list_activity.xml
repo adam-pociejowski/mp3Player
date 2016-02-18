@@ -23,7 +23,7 @@
                 android:layout_weight="4"
                 android:id="@+id/list_fragment_header"
                 android:textColor="@color/white"
-                android:text="Playlist"
+                android:text="My Playlists"
                 android:textAlignment="center"
                 android:gravity="center"/>
 

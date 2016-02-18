@@ -1,12 +1,17 @@
 package com.example.adam.mp3player.model;
 
+import android.content.Context;
+
+import com.example.adam.mp3player.database.DatabaseConnector;
+
 import java.util.ArrayList;
 
 public class Config {
     private static volatile Config instance = null;
     private static final String MUSIC_INTERNAL_PATH = "/storage/emulated/0/Music";
     private static ArrayList<Song> songsList;
-    private static ArrayList<Playlist> playlists;
+    private static ArrayList<Playlist> playlists = null;
+    private static DatabaseConnector db;
 
 
     public static Song getSongByPath(String path) {
@@ -16,7 +21,13 @@ public class Config {
         return null;
     }
 
-    public static ArrayList<Playlist> getPlaylists() { return playlists; }
+    public static ArrayList<Playlist> getPlaylists(Context context) {
+        if (playlists == null) {
+            db = DatabaseConnector.getInstance(context);
+            playlists = db.getFromDatabase();
+        }
+        return playlists;
+    }
 
     public static void setPlaylists(ArrayList<Playlist> playlists) { Config.playlists = playlists; }
 

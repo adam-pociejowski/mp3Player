@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.adam.mp3player.main.player_fragment.PlayerFragment;
+
 public class PlaylistsSwipeAdapter extends FragmentStatePagerAdapter {
     private PlaylistActivity activity;
 
@@ -20,7 +22,8 @@ public class PlaylistsSwipeAdapter extends FragmentStatePagerAdapter {
             return fragment;
         }
         else if (position == 1) {
-            PlaylistPlayerFragment fragment = new PlaylistPlayerFragment();
+            PlayerFragment fragment = new PlayerFragment();
+            activity.setPlayerFragment(fragment);
             return fragment;
         }
         return null;

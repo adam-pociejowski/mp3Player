@@ -16,24 +16,26 @@ import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class PlayerFragment extends Fragment {
-    private MainActivity activity;
+    @Bind(R.id.player_fragment_header) TextView textView;
+    @Bind(R.id.album_image) ImageView image;
+    @Bind(R.id.player_previousButton) Button previousButton;
+    @Bind(R.id.player_nextButton) Button nextButton;
+    @Bind(R.id.player_pauseButton) Button pauseButton;
+    @Bind(R.id.player_seekBar) SeekBar seekBar;
     private View view;
-    private TextView textView;
-    private SeekBar seekBar;
     private Song playingSong;
     private Boolean playing;
-    private Button previousButton, nextButton, pauseButton;
     private Thread thread = null;
-    private ImageView image;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.main_activity_frg_player, container, false);
-        textView = (TextView)view.findViewById(R.id.player_fragment_header);
-        image = (ImageView)view.findViewById(R.id.album_image);
-        previousButton = (Button)view.findViewById(R.id.player_previousButton);
+        ButterKnife.bind(this, view);
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,7 +43,6 @@ public class PlayerFragment extends Fragment {
                 Player.getInstance().getReference().previousSong();
             }
         });
-        nextButton = (Button)view.findViewById(R.id.player_nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +50,6 @@ public class PlayerFragment extends Fragment {
                 Player.getInstance().getReference().nextSong();
             }
         });
-        pauseButton = (Button)view.findViewById(R.id.player_pauseButton);
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,8 +63,6 @@ public class PlayerFragment extends Fragment {
                 }
             }
         });
-
-        seekBar = (SeekBar)view.findViewById(R.id.player_seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
