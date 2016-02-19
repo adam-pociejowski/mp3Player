@@ -20,7 +20,10 @@ import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.model.Playlist;
 import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
+import com.example.adam.mp3player.player.PlayerActivity;
 import com.example.adam.mp3player.player.PlayerCommunicator;
+import com.example.adam.mp3player.playlist.add_playlist.AddPlaylistActivity;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -28,20 +31,30 @@ public class PlaylistSongsFragment extends Fragment implements PlayerCommunicato
     @Bind(R.id.list_fragment_header) TextView textView;
     @Bind(R.id.show_popup_menu) Button popupMenuButton;
     @Bind(R.id.files_list_view) ListView listView;
-    private MyListViewAdapter myListAdapter;
-    private PlaylistActivity activity;
-    private Playlist playlist;
     private Player player = Player.getInstance();
-    private static int selected = -1;
+    private MyListViewAdapter myListAdapter;
+    private PlayerActivity playerActivity;
+    private PlaylistActivity activity;
+    private int selected;
+    private Playlist playlist;
+
+
+    public void setActivity(PlaylistActivity activity, PlayerActivity playerActivity) {
+        this.activity = activity;
+        this.playerActivity = playerActivity;
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_activity_frg_list, container, false);
         ButterKnife.bind(this, view);
+        selected = -1;
+        player.reset();
         player.setReference(this);
+        player.registerReceiver(activity, playerActivity);
         playlist = activity.getPlaylist();
-        textView.setText("Playlist - " + playlist.getPlaylistName()+" | amount: "+playlist.getPlaylistsSize());
+        textView.setText(playlist.getPlaylistName()+" - "+playlist.getPlaylistsSize()+" songs");
         popupMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -50,15 +63,15 @@ public class PlaylistSongsFragment extends Fragment implements PlayerCommunicato
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_all_songs))) {
-                            Intent i = new Intent(activity, MainActivity.class);
-                            activity.startActivity(i);
-                        } else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_my_playlists))) {
-                            Intent i = new Intent(activity, PlaylistListActivity.class);
-                            activity.startActivity(i);
-                        } else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist))) {
-                        } else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {
-                        }
+                        Intent i = null;
+                        if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_all_songs)))
+                            i = new Intent(activity, MainActivity.class);
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_my_playlists)))
+                            i = new Intent(activity, PlaylistListActivity.class);
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist)))
+                            i = new Intent(activity, AddPlaylistActivity.class);
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {}
+                        activity.startActivity(i);
                         return true;
                     }
                 });
@@ -72,16 +85,16 @@ public class PlaylistSongsFragment extends Fragment implements PlayerCommunicato
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    player.stop();
-                    player.playSong(playlist.getSongs().get(position));
                     if (selected != position) {
+                        player.stop();
+                        player.playSong(playlist.getSongs().get(position));
                         activity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(position), position);
                         selected = position;
-                    } else {
+                    } else if (selected == position && !player.isPaused()) {
                         activity.getPlayerFragment().stopSong();
                         player.stop();
                         selected = -1;
-                    }
+                    } else player.resume();
                     myListAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     Log.e("List item clicked error", e.getMessage() + " - ListFragmentListViewCreator.java");
@@ -93,6 +106,7 @@ public class PlaylistSongsFragment extends Fragment implements PlayerCommunicato
 
     @Override
     public void nextSong() {
+       // Log.d("next", "nextSong");
         if (++selected >= playlist.getSongs().size()) selected = playlist.getSongs().size() - 1;
         player.playSong(playlist.getSongs().get(selected));
         myListAdapter.notifyDataSetChanged();
@@ -138,7 +152,4 @@ public class PlaylistSongsFragment extends Fragment implements PlayerCommunicato
         @Override
         public long getItemId(int position) { return position; }
     }
-
-
-    public void setActivity(PlaylistActivity activity) { this.activity = activity; }
 }

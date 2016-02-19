@@ -1,5 +1,10 @@
 package com.example.adam.mp3player.player;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.util.Log;
 import com.example.adam.mp3player.model.Song;
@@ -7,9 +12,12 @@ import com.example.adam.mp3player.model.Song;
 public class Player extends MediaPlayer {
     private static volatile Player instance = null;
     private PlayerCommunicator reference = null;
+    private MusicHeadsetReciever receiver;
+    private Boolean paused = false;
 
     private Player() {
         super();
+        receiver = new MusicHeadsetReciever();
         setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -21,20 +29,52 @@ public class Player extends MediaPlayer {
         });
     }
 
+    public void registerReceiver(Activity activity, PlayerActivity playerActivity) {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        activity.registerReceiver(receiver, filter);
+        receiver.setPlayerActivity(playerActivity);
+    }
+
     public void playSong(Song song) {
         try {
             reset();
             setDataSource(song.getAbsolutePath());
             prepare();
             start();
-            Log.d("Start", "Start Playing "+song.getTitle());
         }
         catch (Exception e) {
             Log.e("Playing song error", e.getMessage()+" - Player.java");
         }
     }
 
-    public void resume() { start(); }
+    public void seekForward(int millis) {
+        int position = getCurrentPosition() + millis;
+        if (position < getDuration()) seekTo(position);
+    }
+
+    public void seekBehind(int millis) {
+        int position = getCurrentPosition() - millis;
+        if (position > 0) seekTo(position);
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        paused = true;
+    }
+
+    public void resume() {
+        start();
+        paused = false;
+    }
+
+    public void reset() {
+        stop();
+        paused = false;
+        super.reset();
+    }
+
+    public Boolean isPaused() { return paused; }
 
     public void setReference(PlayerCommunicator reference) { this.reference = reference; }
 
@@ -43,5 +83,20 @@ public class Player extends MediaPlayer {
     public static synchronized Player getInstance() {
         if (instance == null) instance = new Player();
         return instance;
+    }
+
+    private class MusicHeadsetReciever extends BroadcastReceiver {
+        private PlayerActivity activity;
+        private String state = "";
+
+        public void setPlayerActivity(PlayerActivity activity) { this.activity = activity; }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+                if (!state.equals("")) activity.notifyHeadsetPlugStateChanged();
+                state = Intent.ACTION_HEADSET_PLUG;
+            }
+        }
     }
 }

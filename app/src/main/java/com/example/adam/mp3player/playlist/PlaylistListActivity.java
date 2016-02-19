@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.database.DatabaseConnector;
 import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.model.Config;
 import com.example.adam.mp3player.model.Playlist;
@@ -57,7 +56,6 @@ public class PlaylistListActivity extends Activity {
             }
         });
         playlists = Config.getPlaylists(getApplicationContext());
-
         myListAdapter = new MyListViewAdapter(this.getApplicationContext());
         listView.setAdapter(myListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

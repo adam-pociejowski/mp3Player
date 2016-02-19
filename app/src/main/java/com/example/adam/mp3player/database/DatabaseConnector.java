@@ -16,7 +16,11 @@ public class DatabaseConnector {
 
     private DatabaseConnector(Context context) {
         databaseHelper = new DatabaseHelper(context);
-        //databaseHelper.onUpgrade(databaseHelper.getWritableDatabase(), 1, 2);
+    }
+
+
+    public void resetDatabase() {
+        databaseHelper.onUpgrade(databaseHelper.getWritableDatabase(), 1, 2);
     }
 
 
@@ -27,9 +31,7 @@ public class DatabaseConnector {
             contentValues.put(FeedReaderContract.FeedEntry.PLAYLIST_ID, playlist.getPlaylistId());
             contentValues.put(FeedReaderContract.FeedEntry.PLAYLIST_NAME, playlist.getPlaylistName());
             contentValues.put(FeedReaderContract.FeedEntry.SONG_PATH, song.getAbsolutePath());
-
             db.insert(FeedReaderContract.FeedEntry.TABLE_NAME, null, contentValues);
-            Log.d("Database Added", song.getTitle());
         }
     }
 
@@ -40,20 +42,22 @@ public class DatabaseConnector {
                 FeedReaderContract.FeedEntry.SONG_PATH};
         Cursor c = db.query(FeedReaderContract.FeedEntry.TABLE_NAME, projection, null, null, null,
                 null, FeedReaderContract.FeedEntry.PLAYLIST_ID+" ASC");
-        c.moveToFirst();
+
         ArrayList<Playlist> playlists = new ArrayList<>();
-        int actualPlaylistId = 0;
-        do {
-            int playlistId = c.getInt(0);
-            if (actualPlaylistId != playlistId) {
-                String playlistName = c.getString(1);
-                playlists.add(new Playlist(playlistId, playlistName));
-                actualPlaylistId = playlistId;
-            }
-            Song song = Config.getSongByPath(c.getString(2));
-            playlists.get(playlists.size() - 1).addSong(song);
-            Log.d("Read", playlistId+" "+song.getTitle());
-        } while (c.moveToNext());
+        int actualPlaylistId = -1;
+        if (c.moveToFirst()) {
+            do {
+                int playlistId = c.getInt(0);
+                if (actualPlaylistId != playlistId) {
+                    String playlistName = c.getString(1);
+                    playlists.add(new Playlist(playlistId, playlistName));
+                    actualPlaylistId = playlistId;
+                }
+                Song song = Config.getSongByPath(c.getString(2));
+                playlists.get(playlists.size() - 1).addSong(song);
+            } while (c.moveToNext());
+        }
+
         return playlists;
     }
 

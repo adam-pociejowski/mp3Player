@@ -3,13 +3,13 @@ package com.example.adam.mp3player.main;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.list_fragment.ListFragment;
-import com.example.adam.mp3player.main.player_fragment.PlayerFragment;
+import com.example.adam.mp3player.player.PlayerActivity;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements PlayerActivity {
     @Bind(R.id.main_activity_view_pager) ViewPager viewPager;
     ListFragment listFragment;
     PlayerFragment playerFragment;
@@ -19,9 +19,13 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
-        SwipeAdapter swipeAdapter = new SwipeAdapter(getSupportFragmentManager(), this);
+        SwipeAdapter swipeAdapter = new SwipeAdapter(getSupportFragmentManager(), this, this);
         viewPager.setAdapter(swipeAdapter);
     }
+
+
+    @Override
+    public void notifyHeadsetPlugStateChanged() { playerFragment.pause(); }
 
     public void setPlayerFragment(PlayerFragment playerFragment) { this.playerFragment = playerFragment; }
 

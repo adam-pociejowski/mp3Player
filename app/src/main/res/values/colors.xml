@@ -16,8 +16,8 @@
     <color name="blue">#0000FF</color>
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
-    <color name="inactiveListItem">#303030</color>
-    <color name="activeListItem">#404070</color>
+    <color name="inactiveListItem">#202020</color>
+    <color name="activeListItem">#1976D2</color>
     <color name="indigo">#3F51B5</color>
     <color name="darkindigo">#1A237E</color>
     <color name="accentred">#F44336</color>

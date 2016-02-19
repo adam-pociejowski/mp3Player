@@ -1,7 +1,12 @@
-package com.example.adam.mp3player.main.list_fragment;
+package com.example.adam.mp3player.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,31 +20,44 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.main.MainActivity;
+import com.example.adam.mp3player.model.Config;
 import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
+import com.example.adam.mp3player.player.PlayerActivity;
 import com.example.adam.mp3player.player.PlayerCommunicator;
 import com.example.adam.mp3player.playlist.PlaylistListActivity;
 import com.example.adam.mp3player.playlist.add_playlist.AddPlaylistActivity;
-
+import java.io.File;
 import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ListFragmentListViewCreator implements PlayerCommunicator {
+public class ListFragment extends Fragment implements PlayerCommunicator {
     @Bind(R.id.files_list_view) ListView listView;
     @Bind(R.id.show_popup_menu) Button button;
-    private ArrayList<Song> songsList;
-    private static int selected;
-    private MyListViewAdapter myListAdapter;
+    @Bind(R.id.list_fragment_header) TextView textView;
     private Player player = Player.getInstance();
+    private MyListViewAdapter myListAdapter;
+    private PlayerActivity playerActivity;
+    private ArrayList<Song> songsList;
     private MainActivity activity;
+    private int selected = -1;
+    private View view;
 
-    public ListFragmentListViewCreator(final ArrayList<Song> songsList, final MainActivity activity, final View view) {
-        this.songsList = songsList;
+    public void setActivity(MainActivity activity, PlayerActivity playerActivity) {
         this.activity = activity;
+        this.playerActivity = playerActivity;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.main_activity_frg_list, container, false);
         ButterKnife.bind(this, view);
-        final Context context = activity.getApplicationContext();
+        createList();
+        selected = -1;
+        player.reset();
+        player.registerReceiver(activity, playerActivity);
+        textView.setText("Main Playlist | "+Config.getSongsAmount()+" songs");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -48,16 +66,15 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_all_songs))) {}
-                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_my_playlists))) {
-                            Intent i = new Intent(activity, PlaylistListActivity.class);
-                            activity.startActivity(i);
-                        }
-                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist))) {
-                            Intent i = new Intent(activity, AddPlaylistActivity.class);
-                            activity.startActivity(i);
-                        }
+                        Intent i = null;
+                        if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_all_songs)))
+                            i = new Intent(activity, MainActivity.class);
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_my_playlists)))
+                            i = new Intent(activity, PlaylistListActivity.class);
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist)))
+                            i = new Intent(activity, AddPlaylistActivity.class);
                         else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {}
+                        activity.startActivity(i);
                         return true;
                     }
                 });
@@ -65,30 +82,71 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
             }
         });
 
-        myListAdapter = new MyListViewAdapter(context);
+        myListAdapter = new MyListViewAdapter(activity.getApplicationContext());
         listView.setAdapter(myListAdapter);
         player.setReference(this);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    player.stop();
-                    player.playSong(songsList.get(position));
                     if (selected != position) {
+                        player.stop();
+                        player.playSong(songsList.get(position));
                         activity.getPlayerFragment().setPlayingSong(songsList.get(position), position);
                         selected = position;
-                    }
-                    else {
+                    } else if (selected == position && !player.isPaused()) {
                         activity.getPlayerFragment().stopSong();
                         player.stop();
                         selected = -1;
-                    }
+                    } else player.resume();
                     myListAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     Log.e("List item clicked error", e.getMessage() + " - ListFragmentListViewCreator.java");
                 }
             }
         });
+        return view;
+    }
+
+
+    public void createList() {
+        songsList = Config.getInstance().getSongsList();
+        if (songsList == null) {
+            songsList = new ArrayList<>();
+            File directory = new File(Config.getInstance().getMusicInternalPath());
+            try {
+                File files[] = directory.listFiles();
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                for (File file : files) {
+                    mmr.setDataSource(file.getAbsolutePath());
+                    byte[] data = mmr.getEmbeddedPicture();
+                    if (data != null) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath(), bitmap));
+                    }
+                    else songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath(), null));
+                }
+                songsList = getSortedSongs(songsList);
+                Config.getInstance().setSongsList(songsList);
+            } catch (Exception e) {
+                Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - FilesScannerFragment.java");
+            }
+        }
+    }
+
+
+    private ArrayList<Song> getSortedSongs(ArrayList<Song> songs) {
+        Song s;
+        int i, j;
+
+        for (j = 0; j < songs.size(); j++) {
+            s = songs.get(j);
+            for (i = j - 1; (i >= 0) && (songs.get(i).getTitle().compareTo(s.getTitle()) > 0); i--) {
+                songs.set(i + 1, songs.get(i));
+            }
+            songs.set(i + 1, s);
+        }
+        return songs;
     }
 
 
@@ -120,7 +178,6 @@ public class ListFragmentListViewCreator implements PlayerCommunicator {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
             View customView  = layoutInflater.inflate(R.layout.main_activity_list_fragment_listview_item, parent, false);
             TextView textView = (TextView)customView.findViewById(R.id.list_fragment_textView);
             Song song = songsList.get(position);
