@@ -8,17 +8,25 @@ public class Song implements Parcelable {
     private String absolutePath;
     private String title;
     private Bitmap image;
+    private String timeAsString;
 
-    public Song(String title, String absolutePath, Bitmap image) {
+
+
+
+
+    public Song(String title, String absolutePath, Bitmap image, String timeAsString) {
         this.title = title;
         this.absolutePath = absolutePath;
         this.image = image;
+        this.timeAsString = timeAsString;
     }
 
     public Song(String title, String absolutePath) {
         this.title = title;
         this.absolutePath = absolutePath;
     }
+
+    public String getTimeAsString() { return timeAsString; }
 
     public String getTitle() { return title; }
 

@@ -1,19 +1,23 @@
 package com.example.adam.mp3player.main;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.adam.mp3player.model.Playlist;
 import com.example.adam.mp3player.player.PlayerActivity;
 
 public class SwipeAdapter extends FragmentStatePagerAdapter {
-    private MainActivity activity;
+    private Activity activity;
     private PlayerActivity playerActivity;
+    private Playlist playlist;
 
-    public SwipeAdapter(FragmentManager fm, MainActivity activity, PlayerActivity playerActivity) {
+    public SwipeAdapter(FragmentManager fm, Activity activity, PlayerActivity playerActivity, Playlist playlist) {
         super(fm);
         this.activity = activity;
         this.playerActivity = playerActivity;
+        this.playlist = playlist;
     }
 
     @Override
@@ -21,12 +25,13 @@ public class SwipeAdapter extends FragmentStatePagerAdapter {
         if (position == 0) {
             ListFragment fragment = new ListFragment();
             fragment.setActivity(activity, playerActivity);
-            activity.setListFragment(fragment);
+            fragment.setPlaylist(playlist);
+            playerActivity.setListFragment(fragment);
             return fragment;
         }
         else if (position == 1) {
             PlayerFragment fragment = new PlayerFragment();
-            activity.setPlayerFragment(fragment);
+            playerActivity.setPlayerFragment(fragment);
             return fragment;
         }
         return null;

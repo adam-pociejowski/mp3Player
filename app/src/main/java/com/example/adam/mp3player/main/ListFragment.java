@@ -1,10 +1,8 @@
 package com.example.adam.mp3player.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,53 +13,65 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.example.adam.mp3player.R;
-import com.example.adam.mp3player.main.MainActivity;
-import com.example.adam.mp3player.model.Config;
+import com.example.adam.mp3player.model.Playlist;
 import com.example.adam.mp3player.model.Song;
 import com.example.adam.mp3player.player.Player;
 import com.example.adam.mp3player.player.PlayerActivity;
 import com.example.adam.mp3player.player.PlayerCommunicator;
 import com.example.adam.mp3player.playlist.PlaylistListActivity;
 import com.example.adam.mp3player.playlist.add_playlist.AddPlaylistActivity;
-import java.io.File;
+
 import java.util.ArrayList;
+import java.util.Random;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class ListFragment extends Fragment implements PlayerCommunicator {
     @Bind(R.id.files_list_view) ListView listView;
-    @Bind(R.id.show_popup_menu) Button button;
+    @Bind(R.id.repeatButton) Button repeatButton;
+    @Bind(R.id.shuffleButton) Button shuffleButton;
+    @Bind(R.id.show_popup_menu) Button popupMenuButton;
     @Bind(R.id.list_fragment_header) TextView textView;
+    @Bind(R.id.list_fragment_header_label) TextView label;
     private Player player = Player.getInstance();
+    private ArrayList<Integer> shuffledSongs = new ArrayList<>();
     private MyListViewAdapter myListAdapter;
     private PlayerActivity playerActivity;
-    private ArrayList<Song> songsList;
-    private MainActivity activity;
+    private Boolean shuffle = false;
+    private Boolean repeat = false;
+    private Playlist playlist;
+    private Activity activity;
     private int selected = -1;
     private View view;
 
-    public void setActivity(MainActivity activity, PlayerActivity playerActivity) {
+    public void setActivity(Activity activity, PlayerActivity playerActivity) {
         this.activity = activity;
         this.playerActivity = playerActivity;
+    }
+
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.main_activity_frg_list, container, false);
         ButterKnife.bind(this, view);
-        createList();
         selected = -1;
         player.reset();
         player.registerReceiver(activity, playerActivity);
-        textView.setText("Main Playlist | "+Config.getSongsAmount()+" songs");
-        button.setOnClickListener(new View.OnClickListener() {
+        textView.setText(playlist.getPlaylistName());
+        label.setText("0/"+playlist.getPlaylistsSize());
+        popupMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                PopupMenu popup = new PopupMenu(activity, button);
+                PopupMenu popup = new PopupMenu(activity, popupMenuButton);
                 popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -73,12 +83,42 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
                             i = new Intent(activity, PlaylistListActivity.class);
                         else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist)))
                             i = new Intent(activity, AddPlaylistActivity.class);
-                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {}
+                        else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {
+                        }
                         activity.startActivity(i);
                         return true;
                     }
                 });
                 popup.show();
+            }
+        });
+
+        repeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (repeat) {
+                    repeatButton.setBackground(getResources().getDrawable(R.drawable.repeat_inactive_100p));
+                    repeat = false;
+                }
+                else {
+                    repeatButton.setBackground(getResources().getDrawable(R.drawable.repeat_active_100p));
+                    repeat = true;
+                }
+            }
+        });
+
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (shuffle) {
+                    shuffleButton.setBackground(getResources().getDrawable(R.drawable.shuffle_inactive_100p));
+                    shuffle = false;
+                }
+                else {
+                    shuffleButton.setBackground(getResources().getDrawable(R.drawable.shuffle_active_100p));
+                    shuffleSongs();
+                    shuffle = true;
+                }
             }
         });
 
@@ -91,11 +131,12 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
                 try {
                     if (selected != position) {
                         player.stop();
-                        player.playSong(songsList.get(position));
-                        activity.getPlayerFragment().setPlayingSong(songsList.get(position), position);
+                        player.playSong(playlist.getSongs().get(position));
+                        playerActivity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(position));
                         selected = position;
+                        label.setText(selected+"/"+playlist.getPlaylistsSize());
                     } else if (selected == position && !player.isPaused()) {
-                        activity.getPlayerFragment().stopSong();
+                        playerActivity.getPlayerFragment().stopSong();
                         player.stop();
                         selected = -1;
                     } else player.resume();
@@ -109,62 +150,53 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
     }
 
 
-    public void createList() {
-        songsList = Config.getInstance().getSongsList();
-        if (songsList == null) {
-            songsList = new ArrayList<>();
-            File directory = new File(Config.getInstance().getMusicInternalPath());
-            try {
-                File files[] = directory.listFiles();
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                for (File file : files) {
-                    mmr.setDataSource(file.getAbsolutePath());
-                    byte[] data = mmr.getEmbeddedPicture();
-                    if (data != null) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                        songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath(), bitmap));
-                    }
-                    else songsList.add(new Song(file.getName().substring(0, file.getName().length() - 4), file.getAbsolutePath(), null));
-                }
-                songsList = getSortedSongs(songsList);
-                Config.getInstance().setSongsList(songsList);
-            } catch (Exception e) {
-                Log.e("error", "Error while reading files from " + Config.getInstance().getMusicInternalPath() + " - FilesScannerFragment.java");
-            }
-        }
-    }
-
-
-    private ArrayList<Song> getSortedSongs(ArrayList<Song> songs) {
-        Song s;
-        int i, j;
-
-        for (j = 0; j < songs.size(); j++) {
-            s = songs.get(j);
-            for (i = j - 1; (i >= 0) && (songs.get(i).getTitle().compareTo(s.getTitle()) > 0); i--) {
-                songs.set(i + 1, songs.get(i));
-            }
-            songs.set(i + 1, s);
-        }
-        return songs;
-    }
-
-
     @Override
     public synchronized void nextSong() {
-        if (++selected >= songsList.size()) selected = songsList.size() - 1;
-        player.playSong(songsList.get(selected));
-        myListAdapter.notifyDataSetChanged();
-        activity.getPlayerFragment().setPlayingSong(songsList.get(selected), selected);
+        Log.d("Next Song", "shuffle "+shuffle+" | shuffled: "+shuffledSongs.size()+" | repeat: "+repeat);
+        if (shuffle) {
+            if (shuffledSongs.size() == 0 && repeat) shuffleSongs();
+            else if (shuffledSongs.size() == 0 && !repeat) return;
+            if (shuffledSongs.size() > 0) {
+                selected = shuffledSongs.get(0);
+                shuffledSongs.remove(0);
+                player.playSong(playlist.getSongs().get(selected));
+                myListAdapter.notifyDataSetChanged();
+                playerActivity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(selected));
+            }
+        }
+        else  {
+            selected++;
+            if (selected >= playlist.getSongs().size() && repeat) selected = 0;
+            else if (selected >= playlist.getSongs().size() && !repeat) return;
+            player.playSong(playlist.getSongs().get(selected));
+            myListAdapter.notifyDataSetChanged();
+            playerActivity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(selected));
+        }
+        label.setText(selected+"/"+playlist.getPlaylistsSize());
     }
 
 
     @Override
     public synchronized void previousSong() {
         if (--selected < 0) selected = 0;
-        player.playSong(songsList.get(selected));
+        player.playSong(playlist.getSongs().get(selected));
         myListAdapter.notifyDataSetChanged();
-        activity.getPlayerFragment().setPlayingSong(songsList.get(selected), selected);
+        playerActivity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(selected));
+    }
+
+
+    private void shuffleSongs() {
+        Random random = new Random();
+        shuffledSongs = new ArrayList<>();
+        ArrayList<Integer> tmp = new ArrayList<>();
+        for (int i = 0; i < playlist.getPlaylistsSize(); i++) tmp.add(i);
+
+        for (int i = 0; i < playlist.getPlaylistsSize(); i++) {
+            int generated = random.nextInt(tmp.size());
+            int index = tmp.get(generated);
+            tmp.remove(generated);
+            shuffledSongs.add(index);
+        }
     }
 
 
@@ -180,19 +212,21 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View customView  = layoutInflater.inflate(R.layout.main_activity_list_fragment_listview_item, parent, false);
             TextView textView = (TextView)customView.findViewById(R.id.list_fragment_textView);
-            Song song = songsList.get(position);
+            TextView time = (TextView)customView.findViewById(R.id.list_fragment_songTime);
+            LinearLayout linearLayout = (LinearLayout) customView.findViewById(R.id.list_fragment_linearLayout);
+            Song song = playlist.getSongs().get(position);
             textView.setText((position + 1)+". "+song.getTitle());
-
-            if (position == selected && player.isPlaying()) textView.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
+            time.setText(song.getTimeAsString());
+            if (position == selected && player.isPlaying()) linearLayout.setBackgroundColor(context.getResources().getColor(R.color.activeListItem));
             return customView;
         }
 
 
         @Override
-        public int getCount() { return songsList.size(); }
+        public int getCount() { return playlist.getSongs().size(); }
 
         @Override
-        public Object getItem(int position) { return songsList.get(position); }
+        public Object getItem(int position) { return playlist.getSongs().get(position); }
 
         @Override
         public long getItemId(int position) { return position; }

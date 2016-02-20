@@ -28,10 +28,11 @@
                 android:gravity="center"/>
 
             <Button android:id="@+id/show_popup_menu"
-                android:layout_width="0dp"
+                android:layout_width="30dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="Menu"/>
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/menu_60p"/>
         </LinearLayout>
 
         <ListView android:id="@+id/list_view_of_playlists"

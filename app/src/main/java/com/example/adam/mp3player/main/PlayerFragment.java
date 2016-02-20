@@ -1,6 +1,7 @@
 package com.example.adam.mp3player.main;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,9 +27,9 @@ public class PlayerFragment extends Fragment {
     @Bind(R.id.player_behindButton) Button behindButton;
     @Bind(R.id.player_pauseButton) Button pauseButton;
     @Bind(R.id.player_seekBar) SeekBar seekBar;
-    private View view;
-    private Boolean playing;
     private Thread thread = null;
+    private Boolean playing;
+    private View view;
 
 
     @Override
@@ -93,18 +94,17 @@ public class PlayerFragment extends Fragment {
     }
 
 
-    public void setPlayingSong(Song song, int position) {
-        if (song.getImage() != null) {
-            Bitmap bitmap = song.getImage();
-            double factor = (double)image.getHeight() / (double)image.getWidth();
-            int leftMargin = 0, width = (int)(bitmap.getHeight()/factor);
-            if (factor > 1.0) leftMargin = (bitmap.getWidth() - width) / 2;
-            bitmap = Bitmap.createBitmap(bitmap, leftMargin, 0, width, bitmap.getHeight());
-            bitmap = getResizedBitmap(bitmap, image.getWidth(), image.getHeight());
-            image.setImageBitmap(bitmap);
-            image.setAdjustViewBounds(true);
-        }
-        else image.setImageDrawable(view.getResources().getDrawable(R.drawable.default_album));
+    public void setPlayingSong(Song song) {
+        Bitmap bitmap;
+        if (song.getImage() != null) bitmap = song.getImage();
+        else bitmap = BitmapFactory.decodeResource(view.getResources(), R.drawable.default_album);
+        double factor = (double)image.getHeight() / (double)image.getWidth();
+        int leftMargin = 0, width = (int)(bitmap.getHeight()/factor);
+        if (factor > 1.0) leftMargin = (bitmap.getWidth() - width) / 2;
+        bitmap = Bitmap.createBitmap(bitmap, leftMargin, 0, width, bitmap.getHeight());
+        bitmap = getResizedBitmap(bitmap, image.getWidth(), image.getHeight());
+        image.setImageBitmap(bitmap);
+        image.setAdjustViewBounds(true);
         pauseButton.setBackground(getResources().getDrawable(R.drawable.pause_60p));
         playing = false;
         if (thread != null) {
@@ -131,7 +131,6 @@ public class PlayerFragment extends Fragment {
         });
         thread.start();
     }
-
 
 
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {

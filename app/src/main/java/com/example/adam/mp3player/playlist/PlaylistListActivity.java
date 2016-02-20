@@ -19,6 +19,8 @@ import com.example.adam.mp3player.R;
 import com.example.adam.mp3player.main.MainActivity;
 import com.example.adam.mp3player.model.Config;
 import com.example.adam.mp3player.model.Playlist;
+import com.example.adam.mp3player.playlist.add_playlist.AddPlaylistActivity;
+
 import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,6 +49,8 @@ public class PlaylistListActivity extends Activity {
                             startActivity(i);
                         } else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_my_playlists))) {
                         } else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_add_playlist))) {
+                            Intent i = new Intent(PlaylistListActivity.this, AddPlaylistActivity.class);
+                            startActivity(i);
                         } else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {
                         }
                         return true;

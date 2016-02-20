@@ -15,20 +15,40 @@
             android:layout_below="@+id/app_bar">
 
             <TextView android:layout_width="0dp"
-                android:layout_height="60dp"
-                android:textSize="22dp"
+                android:layout_height="50dp"
+                android:textSize="20dp"
                 android:layout_weight="4"
                 android:id="@+id/list_fragment_header"
                 android:textColor="@color/white"
-                android:textAlignment="center"
-                android:gravity="center"/>
+                android:gravity="left|center_vertical"
+                android:paddingLeft="10dp"/>
+
+            <Button android:id="@+id/shuffleButton"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/shuffle_inactive_100p"
+                android:layout_marginRight="10dp"/>
+
+            <Button android:id="@+id/repeatButton"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:background="@drawable/repeat_inactive_100p"
+                android:layout_marginRight="5dp"/>
 
             <Button android:id="@+id/show_popup_menu"
-                android:layout_width="0dp"
+                android:layout_width="30dp"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="Menu"/>
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/menu_60p" />
         </LinearLayout>
+
+        <TextView android:id="@+id/list_fragment_header_label"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:textSize="16dp"
+            android:paddingLeft="10dp"
+            android:background="@color/lightindigo"/>
         
         <ListView android:id="@+id/files_list_view"
             android:layout_width="match_parent"

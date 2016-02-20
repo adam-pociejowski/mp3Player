@@ -43,41 +43,47 @@
             android:gravity="center"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="5dp"
+            android:weightSum="6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <Button android:id="@+id/player_previousButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_weight="1"
                 android:background="@drawable/previous_60p"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="40dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true" />
 
             <Button android:id="@+id/player_behindButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/behind_60p"
                 android:layout_toRightOf="@+id/player_previousButton" />
 
             <Button android:id="@+id/player_pauseButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/play_60p"
                 android:layout_toRightOf="@+id/player_behindButton" />
 
             <Button android:id="@+id/player_forwardButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/forward_60p"
                 android:layout_toRightOf="@+id/player_pauseButton" />
 
             <Button android:id="@+id/player_nextButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_weight="1"
                 android:background="@drawable/next_60p"
                 android:layout_toRightOf="@+id/player_forwardButton" />
         </LinearLayout>
