@@ -62,7 +62,14 @@ public class DatabaseConnector {
     }
 
 
-
+    public void removeFromDatabase(Playlist playlist) {
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        for (Song song : playlist.getSongs()) {
+            String args[] = { Integer.toString(playlist.getPlaylistId()), song.getAbsolutePath() };
+            db.delete(FeedReaderContract.FeedEntry.TABLE_NAME, FeedReaderContract.FeedEntry.PLAYLIST_ID+"=? and "+
+                      FeedReaderContract.FeedEntry.SONG_PATH+"=?", args);
+        }
+    }
 
 
     public static synchronized DatabaseConnector getInstance(Context context) {

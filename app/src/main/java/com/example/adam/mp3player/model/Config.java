@@ -29,6 +29,8 @@ public class Config {
         return playlists;
     }
 
+    public static DatabaseConnector getDb() { return db; }
+
     public static void setPlaylists(ArrayList<Playlist> playlists) { Config.playlists = playlists; }
 
     public void setSongsList(ArrayList<Song> songsList) { this.songsList = songsList; }

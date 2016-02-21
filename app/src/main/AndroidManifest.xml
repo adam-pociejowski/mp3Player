@@ -1,35 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.adam.mp3player">
+
     <uses-sdk android:minSdkVersion="16" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <application android:allowBackup="true"
+    <application
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.MainActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
+        <activity
+            android:name=".main.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".playlist.PlaylistListActivity"
-            android:screenOrientation="portrait"
+        <activity
+            android:name=".playlist.PlaylistListActivity"
             android:label="@string/title_activity_playlist"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".playlist.PlaylistActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".playlist.PlaylistActivity"
             android:label="@string/title_activity_playlist"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".playlist.add_playlist.AddPlaylistActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".playlist.playlist_operations.AddPlaylistActivity"
             android:label="@string/title_activity_add_to_playlist"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".playlist.playlist_operations.EditPlaylistActivity"
+            android:label="@string/title_activity_edit_playlist"
             android:theme="@style/AppTheme"></activity>
     </application>
+
 </manifest>

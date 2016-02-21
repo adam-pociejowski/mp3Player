@@ -24,11 +24,9 @@ import com.example.adam.mp3player.player.Player;
 import com.example.adam.mp3player.player.PlayerActivity;
 import com.example.adam.mp3player.player.PlayerCommunicator;
 import com.example.adam.mp3player.playlist.PlaylistListActivity;
-import com.example.adam.mp3player.playlist.add_playlist.AddPlaylistActivity;
-
+import com.example.adam.mp3player.playlist.playlist_operations.AddPlaylistActivity;
 import java.util.ArrayList;
 import java.util.Random;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -67,7 +65,7 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
         player.reset();
         player.registerReceiver(activity, playerActivity);
         textView.setText(playlist.getPlaylistName());
-        label.setText("0/"+playlist.getPlaylistsSize());
+        label.setText("selected 0/"+playlist.getPlaylistsSize());
         popupMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
@@ -85,6 +83,7 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
                             i = new Intent(activity, AddPlaylistActivity.class);
                         else if (menuItem.getTitle().equals(view.getResources().getString(R.string.menu_settings))) {
                         }
+                        activity.unregisterReceiver(Player.getInstance().gerReciever());
                         activity.startActivity(i);
                         return true;
                     }
@@ -134,11 +133,12 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
                         player.playSong(playlist.getSongs().get(position));
                         playerActivity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(position));
                         selected = position;
-                        label.setText(selected+"/"+playlist.getPlaylistsSize());
+                        label.setText("selected "+selected+"/"+playlist.getPlaylistsSize());
                     } else if (selected == position && !player.isPaused()) {
                         playerActivity.getPlayerFragment().stopSong();
                         player.stop();
                         selected = -1;
+                        label.setText("selected 0/"+playlist.getPlaylistsSize());
                     } else player.resume();
                     myListAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
@@ -152,7 +152,6 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
 
     @Override
     public synchronized void nextSong() {
-        Log.d("Next Song", "shuffle "+shuffle+" | shuffled: "+shuffledSongs.size()+" | repeat: "+repeat);
         if (shuffle) {
             if (shuffledSongs.size() == 0 && repeat) shuffleSongs();
             else if (shuffledSongs.size() == 0 && !repeat) return;
@@ -172,7 +171,7 @@ public class ListFragment extends Fragment implements PlayerCommunicator {
             myListAdapter.notifyDataSetChanged();
             playerActivity.getPlayerFragment().setPlayingSong(playlist.getSongs().get(selected));
         }
-        label.setText(selected+"/"+playlist.getPlaylistsSize());
+        label.setText("selected "+selected+"/"+playlist.getPlaylistsSize());
     }
 
 

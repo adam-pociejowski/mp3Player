@@ -39,36 +39,42 @@ public class PlayerFragment extends Fragment {
         previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Player.getInstance().stop();
-                Player.getInstance().getReference().previousSong();
+                if (Player.getInstance().isActive()) {
+                    Player.getInstance().stop();
+                    Player.getInstance().getReference().previousSong();
+                }
             }
         });
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Player.getInstance().stop();
-                Player.getInstance().getReference().nextSong();
+                if (Player.getInstance().isActive()) {
+                    Player.getInstance().stop();
+                    Player.getInstance().getReference().nextSong();
+                }
             }
         });
         forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Player.getInstance().seekForward(5000);
+                if (Player.getInstance().isActive()) Player.getInstance().seekForward(5000);
             }
         });
         behindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Player.getInstance().seekBehind(5000);
+                if (Player.getInstance().isActive()) Player.getInstance().seekBehind(5000);
             }
         });
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Player.getInstance().isPlaying()) pause();
-                else {
-                    pauseButton.setBackground(getResources().getDrawable(R.drawable.pause_60p));
-                    Player.getInstance().resume();
+                if (Player.getInstance().isActive()) {
+                    if (Player.getInstance().isPlaying()) pause();
+                    else {
+                        pauseButton.setBackground(getResources().getDrawable(R.drawable.pause_60p));
+                        Player.getInstance().resume();
+                    }
                 }
             }
         });

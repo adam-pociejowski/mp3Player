@@ -12,6 +12,7 @@ import com.example.adam.mp3player.model.Song;
 public class Player extends MediaPlayer {
     private static volatile Player instance = null;
     private PlayerCommunicator reference = null;
+    private Boolean active = false;
     private MusicHeadsetReciever receiver;
     private Boolean paused = false;
 
@@ -40,6 +41,7 @@ public class Player extends MediaPlayer {
             reset();
             setDataSource(song.getAbsolutePath());
             prepare();
+            active = true;
             start();
         }
         catch (Exception e) {
@@ -55,6 +57,13 @@ public class Player extends MediaPlayer {
     public void seekBehind(int millis) {
         int position = getCurrentPosition() - millis;
         if (position > 0) seekTo(position);
+    }
+
+
+    @Override
+    public void stop() throws IllegalStateException {
+        super.stop();
+        active = false;
     }
 
     @Override
@@ -73,6 +82,10 @@ public class Player extends MediaPlayer {
         paused = false;
         super.reset();
     }
+
+    public MusicHeadsetReciever gerReciever() { return receiver; }
+
+    public Boolean isActive() { return active; }
 
     public Boolean isPaused() { return paused; }
 

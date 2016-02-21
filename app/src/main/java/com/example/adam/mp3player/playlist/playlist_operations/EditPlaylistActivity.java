@@ -1,9 +1,9 @@
-package com.example.adam.mp3player.playlist.add_playlist;
+package com.example.adam.mp3player.playlist.playlist_operations;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -29,34 +29,52 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class AddPlaylistActivity extends AppCompatActivity {
+public class EditPlaylistActivity extends Activity {
+    @Bind(R.id.list_fragment_header) TextView headerLabel;
     @Bind(R.id.add_playlist_accept_button) Button acceptButton;
     @Bind(R.id.add_playlist_list_view) ListView listView;
     @Bind(R.id.add_playlist_editText) EditText editText;
     @Bind(R.id.show_popup_menu) Button popupMenuButton;
+    private ArrayList<Song> allSongs = new ArrayList<>();
     private MyListViewAdapter myListViewAdapter;
-    private Boolean checkBoxesState[];
-    private ArrayList<Song> songs;
+    private boolean[] checkBoxesState, beginState;
+    private Playlist playlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_to_playlist_activity);
         ButterKnife.bind(this);
-        songs = Config.getSongsList();
-        checkBoxesState = new Boolean[songs.size()];
-        for (int i = 0; i < checkBoxesState.length; i++) checkBoxesState[i] = false;
+
+        int index = getIntent().getExtras().getInt("playlistIndex");
+        playlist = Config.getPlaylists(getApplicationContext()).get(index);
+        editText.setText(playlist.getPlaylistName());
+        headerLabel.setText(getResources().getString(R.string.edit_playlist));
+        allSongs = Config.getSongsList();
+        checkBoxesState = new boolean[allSongs.size()];
+        for (int i = 0; i < allSongs.size(); i++) checkBoxesState[i] = false;
+        for (Song s : playlist.getSongs()) {
+            int i = 0;
+            for (Song song : allSongs) {
+                if (s.getTitle().equals(song.getTitle())) {
+                    checkBoxesState[i] = true;
+                    break;
+                }
+                i++;
+            }
+        }
+        beginState = checkBoxesState.clone();
 
         popupMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(AddPlaylistActivity.this, popupMenuButton);
+                PopupMenu popup = new PopupMenu(EditPlaylistActivity.this, popupMenuButton);
                 popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         if (menuItem.getTitle().equals(getResources().getString(R.string.menu_all_songs))) {
-                            Intent i = new Intent(AddPlaylistActivity.this, MainActivity.class);
+                            Intent i = new Intent(EditPlaylistActivity.this, MainActivity.class);
                             startActivity(i);
                         } else if (menuItem.getTitle().equals(getResources().getString(R.string.menu_my_playlists))) {
                         } else if (menuItem.getTitle().equals(getResources().getString(R.string.menu_add_playlist))) {
@@ -75,25 +93,38 @@ public class AddPlaylistActivity extends AppCompatActivity {
                 if (editText.getText().length() < 4) Toast.makeText(getApplicationContext(),
                         "Playlist name must have at least 4 characters", Toast.LENGTH_LONG).show();
                 else {
-                    ArrayList<Song> playlistSongs = new ArrayList<>();
-                    int index = 0;
-                    for (Song s : songs) if (checkBoxesState[index++]) playlistSongs.add(s);
+                    Playlist addedItems = new Playlist(playlist.getPlaylistId());
+                    Playlist removedItems = new Playlist(playlist.getPlaylistId());
 
-                    if (playlistSongs.size() > 0) {
-                        ArrayList<Playlist> playlists = Config.getPlaylists(getApplicationContext());
-                        int lastId = 0;
-                        if (playlists.size() > 0) {
-                            lastId = playlists.get(playlists.size() - 1).getPlaylistId();
-                        }
-                        Playlist p = new Playlist(playlistSongs, ++lastId, editText.getText().toString());
-                        playlists.add(p);
-                        DatabaseConnector.getInstance().addToDatabase(p);
-                        Config.setPlaylists(playlists);
-                        Intent i = new Intent(AddPlaylistActivity.this, PlaylistListActivity.class);
-                        startActivity(i);
+                    for (int i = 0; i < allSongs.size(); i++) {
+                        if (!beginState[i] && checkBoxesState[i]) addedItems.addSong(allSongs.get(i));
+                        else if (beginState[i] && !checkBoxesState[i]) removedItems.addSong(allSongs.get(i));
                     }
-                    else Toast.makeText(getApplicationContext(),
+
+                    Log.d("Added", addedItems.getPlaylistsSize()+"");
+                    Log.d("Deleted", removedItems.getPlaylistsSize() + "");
+                    DatabaseConnector db = Config.getDb();
+                    db.addToDatabase(addedItems);
+                    db.removeFromDatabase(removedItems);
+
+                    int i = 0;
+                    for (Song s : allSongs) {
+                        if (playlist.getSongs().contains(s) && !checkBoxesState[i])
+                            playlist.getSongs().remove(s);
+                        else if (!playlist.getSongs().contains(s) && checkBoxesState[i])
+                            playlist.getSongs().add(s);
+                        i++;
+                    }
+
+                    Intent intent = new Intent(EditPlaylistActivity.this, PlaylistListActivity.class);
+                    startActivity(intent);
+
+                    /*
+                    if (playlistSongs.size() > 0) {
+
+                    } else Toast.makeText(getApplicationContext(),
                             "Playlist must have at least 1 song", Toast.LENGTH_LONG).show();
+                            */
                 }
             }
         });
@@ -109,7 +140,6 @@ public class AddPlaylistActivity extends AppCompatActivity {
         myListViewAdapter = new MyListViewAdapter(getApplicationContext());
         listView.setAdapter(myListViewAdapter);
     }
-
 
     class MyListViewAdapter extends BaseAdapter {
         private Context context;
@@ -140,17 +170,17 @@ public class AddPlaylistActivity extends AppCompatActivity {
                 }
             });
             checkBox.setChecked(checkBoxesState[position]);
-            Song song = songs.get(position);
+            Song song = allSongs.get(position);
             textView.setText(song.getTitle());
             return customView;
         }
 
 
         @Override
-        public int getCount() { return songs.size(); }
+        public int getCount() { return allSongs.size(); }
 
         @Override
-        public Object getItem(int position) { return songs.get(position); }
+        public Object getItem(int position) { return allSongs.get(position); }
 
         @Override
         public long getItemId(int position) { return position; }
